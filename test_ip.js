@@ -1,19 +1,15 @@
 // create an array with nodes
 var nodes = new vis.DataSet([
-  {id: 1, label: 'Node 1'},
-  {id: 2, label: 'Node 2'},
-  {id: 3, label: 'Node 3'},
-  {id: 4, label: 'Node 4'},
-  {id: 5, label: 'Node 5'}
+  {id: 'src_ip', label: 'src_ip'},
+  {id: 'out_to_in', label: 'out_to_in'},
+  {id: 'in_to_out', label: 'in_to_out'},
+  {id: 'bad_ip', label: 'bad_ip', color: {border: "red", background: "pink"}},
 ]);
-
 // create an array with edges
 var edges = new vis.DataSet([
-  {from: 1, to: 3},
-  {from: 1, to: 2},
-  {from: 2, to: 4},
-  {from: 2, to: 5},
-  {from: 3, to: 3}
+  {id: 1, from: 'src_ip', to: 'in_to_out', arrows:{to: {enabled: true, type: "triangle"}}},
+  {id: 2, from: 'out_to_in', to: 'src_ip', arrows:{to: {enabled: true, type: "triangle"}}, width: 3},
+  {id: 3, from: 'bad_ip', to: 'src_ip', arrows:{to: {enabled: true, type: "triangle"}}, color: {color: "red"}},
 ]);
 
 // create a network
