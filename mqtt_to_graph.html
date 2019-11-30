@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript MQTT WebSocket Example</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+	<!-- <script type="text/javascript" src="websockets.js"></script> -->
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+      #mynetwork {
+        width: 600px;
+        height: 400px;
+        border: 1px solid lightgray;
+      }
+    </style>
+</head>
+<body>
+	<h1>Network Graph</h1>
+	<div id="mynetwork"></div>
+	<script>
+		var mqtt;
+		var reconnectTimeout = 2000;
+		var host="10.255.255.254"; //change this
+		var port= 61883;
+		var obj_msg;
+		// create an array with nodes
+		var nodes = new vis.DataSet([
+			{id: '10.255.255.101', label: '10.255.255.101'},
+			{id: 'Server', label: 'Server: 172.105.219.146'},
+		]);
+		// create an array with edges
+		var edges = new vis.DataSet([
+			{id: 4, from: '10.255.255.101', to: 'Server'}
+		]);
+
+		function onFailure(message) {
+			console.log("Connection Attempt to Host "+host+"Failed");
+			setTimeout(MQTTconnect, reconnectTimeout);
+		}
+		function onMessageArrived(msg){
+			//console.log(msg.payloadString);
+			var str_msg = msg.payloadString;
+			obj_msg = JSON.parse(str_msg);
+			//console.log(obj_msg);
+			// console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]+ " // oob.out: " +obj_msg["oob.out"]);
+			if(obj_msg["oob.out"]=="eth0"){
+				console.log("out: "+ obj_msg["dest_ip"]);
+				var out_ip = obj_msg["dest_ip"];
+				var nodes = new vis.DataSet([
+					{id: out_ip, label: out_ip},
+					{id: '10.255.255.101', label: '10.255.255.101'},
+					{id: 'Server', label: 'Server: 172.105.219.146'},
+				]);
+
+				var edges = new vis.DataSet([
+					{from: '10.255.255.101', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}},
+					{from: '10.255.255.101', to: 'Server'}
+				]);
+			}else if(obj_msg["oob.out"]=="pp0"){
+				console.log("in: "+ obj_msg["src_ip"]);
+				var out_ip = obj_msg["src_ip"];
+				var nodes = new vis.DataSet([
+					{id: out_ip, label: out_ip},
+					{id: '10.255.255.101', label: '10.255.255.101'},
+					{id: 'Server', label: 'Server: 172.105.219.146'},
+				]);
+
+				var edges = new vis.DataSet([
+					{from: out_ip, to: '10.255.255.101', arrows:{to: {enabled: true, type: "triangle"}}},
+					{from: '10.255.255.101', to: 'Server'}
+				]);
+			}else if(obj_msg["oob.out"]==""){
+				console.log("server: "+ obj_msg["src_ip"]);
+				var out_ip = obj_msg["src_ip"];
+				var nodes = new vis.DataSet([
+					{id: out_ip, label: out_ip},
+					{id: '10.255.255.101', label: '10.255.255.101'},
+					{id: 'Server', label: 'Server: 172.105.219.146'},
+				]);
+
+				var edges = new vis.DataSet([
+					{from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}},
+					{from: '10.255.255.101', to: 'Server'}
+				]);
+			}
+
+			// create a network
+			var container = document.getElementById('mynetwork');
+			var data = {
+			nodes: nodes,
+			edges: edges
+			};
+			var options = {};
+			var network = new vis.Network(container, data, options);
+
+		}
+
+		function onConnect() {
+		// Once a connection has been made, make a subscription and send a message.
+
+			console.log("Connected ");
+			mqtt.subscribe("traffic/172-105-219-146");
+			// message = new Paho.MQTT.Message("Hello World");
+			// message.destinationName = "traffic/172-105-219-146";
+			// mqtt.send(message);
+		}
+		function MQTTconnect() {
+			console.log("connecting to "+ host +" "+ port);
+			mqtt = new Paho.MQTT.Client(host,port,"clientjs");
+			//document.write("connecting to "+ host);
+			var options = {
+				timeout: 3,
+				onSuccess: onConnect,
+				onFailure: onFailure,
+			};
+			mqtt.onMessageArrived = onMessageArrived;
+
+			mqtt.connect(options); //connect
+		}
+		MQTTconnect();
+		//console.log(obj_msg);
+		// console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]+ " // oob.out: " +obj_msg["oob.out"]);
+
+		
+
+		// // create an array with nodes
+		// var nodes = new vis.DataSet([
+
+		// {id: '10.255.255.101', label: '10.255.255.101'},
+		// {id: 'Server', label: 'Server: 172.105.219.146'},
+
+		// ]);
+		// // create an array with edges
+		// var edges = new vis.DataSet([
+		// {id: 4, from: '10.255.255.101', to: 'Server'}
+		// ]);
+
+		// // create a network
+		// var container = document.getElementById('mynetwork');
+		// var data = {
+		// nodes: nodes,
+		// edges: edges
+		// };
+		// var options = {};
+		// var network = new vis.Network(container, data, options);
+	</script>
+	
+</body>	
+</html>
