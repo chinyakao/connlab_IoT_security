@@ -1,31 +1,19 @@
 var dotDefault =
   "digraph {\n" +
   " // Parent nodes\n" +
-  ' lines[label="LINES"]; \n' +
-  ' ahs[label="ARROW HEADS"]; \n' +
+  ' src_ip[label="src_ip"]; \n' +
   "\n" +
   " // Children nodes\n" +
-  ' dot[label="both dot"]; \n' +
-  ' vee[label="back vee"]; \n' +
-  ' diamond[label="diamond and box"]; \n' +
+  ' out_to_in[label="out_to_in"]; \n' +
+  ' in_to_out[label="in_to_out"]; \n' +
+  ' bad_node[label="bad_node", color="pink"]; \n' +
   "\n" +
   " // Line styles\n" +
-  ' lines -- solid[label="solid pink", color="pink"]; \n' +
-  ' lines -- penwidth[label="penwidth=5", penwidth=5]; \n' +
-  ' lines -- dashed[label="dashed green", style="dashed", color="green"]; \n' +
-  ' lines -- dotted[label="dotted purple", style="dotted", color="purple"]; \n' +
   "\n" +
   " // Arrowhead styles\n" +
-  ' ahs -> box[label="box", arrowhead=box]; \n' +
-  ' ahs -> crow[label="crow", arrowhead=crow]; \n' +
-  ' ahs -> curve[label="curve", arrowhead=curve]; \n' +
-  ' ahs -> icurve[label="icurve", arrowhead=icurve]; \n' +
-  ' ahs -> normal[label="normal", arrowhead=normal]; \n' +
-  ' ahs -> inv[label="inv", arrowhead=inv]; \n' +
-  ' ahs -> diamond[label="diamond and box", dir=both, arrowhead=diamond, arrowtail=box]; \n' +
-  ' ahs -> dot[label="both dot", dir=both, arrowhead=dot, arrowtail=dot]; \n' +
-  ' ahs -> tee[label="tee", arrowhead=tee]; \n' +
-  ' ahs -> vee[label="back vee", dir=back, arrowtail=vee]; \n' +
+  ' src_ip -> in_to_out[arrowhead=normal]; \n' +
+  ' out_to_in -> src_ip[arrowhead=normal]; \n' +
+  ' bad_node -> src_ip[arrowhead=normal, penwidth=3, color="pink"]; \n' +
   "}";
 
 // create a network
@@ -67,6 +55,7 @@ function draw() {
 
     // Provide a string with data in DOT language
     data = vis.parseDOTNetwork($("#data").val());
+    console.log(data);
 
     network.setData(data);
   } catch (err) {
