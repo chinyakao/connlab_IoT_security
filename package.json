@@ -1,0 +1,19 @@
+{
+  "name": "connlab_IoT_security",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "jquery": "^3.4.1",
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chinya",
+  "license": "ISC",
+  "description": "final project display in real time",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chinyakao/connlab_IoT_security.git"
+  }
+}
