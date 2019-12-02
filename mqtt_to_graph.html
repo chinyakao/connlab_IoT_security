@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
+  	<meta charset="utf-8">
+
     <title>JavaScript MQTT WebSocket Example</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
 	<!-- <script type="text/javascript" src="websockets.js"></script> -->
@@ -19,17 +21,15 @@
 	<div id="mynetwork"></div>
 	<script>
 		//NETWORK GRAPH
-		var nodes_data = [
-			{id: '10.255.255.101', label: '10.255.255.101', x: 0, y: 0, color: {border: "gray", background: "lightgray"}},
-			{id: 'Server', label: '172.105.219.146',x: -1, y: 0,color: {border: "black", background: "lightgray"}},
-		];
-		var edges_data = [
-			{id: 0, from: '10.255.255.101', to: 'Server'}
-		];
 		// create an array with nodes
-		var nodes = new vis.DataSet(nodes_data);
+		var nodes = new vis.DataSet([
+			{id: 'main_ip', label: '10.255.255.N', x: 0, y: 0, color: {border: "gray", background: "lightgray"}},
+			{id: 'Server', label: '172.105.219.146',x: -1, y: 0,color: {border: "black", background: "lightgray"}},
+		]);
 		// create an array with edges
-		var edges = new vis.DataSet(edges_data);
+		var edges = new vis.DataSet([
+			{id: 0, from: 'main_ip', to: 'Server'}
+		]);
 		// create a network
 		var container = document.getElementById('mynetwork');
 		var data = {
@@ -38,18 +38,6 @@
 		};
 		var options = {};
 		var network = new vis.Network(container, data, options);
-
-		function draw() {
-		    nodes = new vis.DataSet(nodes_data);
-		    edges = new vis.DataSet(edges_data);
-		    data = {
-				nodes: nodes,
-				edges: edges
-			};
-
-		    network.setData(data);
-		}
-
 
 		//MQTT
 		var mqtt;
@@ -61,66 +49,105 @@
 			console.log("Connection Attempt to Host "+host+"Failed");
 			setTimeout(MQTTconnect, reconnectTimeout);
 		}
-		function onMessageArrived(msg){
-			//console.log(msg.payloadString);
+		function onMessageArrived(msg)
+		{
 			var str_msg = msg.payloadString;
 			var obj_msg = JSON.parse(str_msg);
 			// console.log(obj_msg);
 			// console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]+ " // oob.out: " +obj_msg["oob.out"]);
 
-			if(obj_msg["oob.out"]=="eth0"){
+			//內網連外面
+			if(obj_msg["oob.out"]=="eth0")
+			{
+				if(nodes.get('main_ip').label == '10.255.255.N'){
+					nodes.update({id:'main_ip', label: obj_msg["src_ip"]});
+				}
 				var out_ip = obj_msg["dest_ip"];
 				var out_edge = out_ip + "1";
-				// console.log(nodes_data.find(({ id }) => id === out_ip) );
-				
-				if(nodes_data.find(({ id }) => id === out_ip) == undefined &&
-					edges_data.find(({ id }) => id === out_edge) == undefined)
+				//NEW node and new connect
+				if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
 				{
-					var new_node = {id: out_ip, label: out_ip};
-					var new_edge = {id: out_edge, from: out_ip, to: '10.255.255.101', arrows:{to: {enabled: true, type: "triangle"}}}
-					nodes_data.push(new_node);
-					edges_data.push(new_edge);
-					//console.log(new_node);
-					console.log(nodes_data);
-					console.log(edges_data);
-					draw();
+					nodes.add({id: out_ip, label: out_ip, color: {border:"#2B7CE9", background: "#CCDDFF"}});
+					edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#2B7CE9", width: 1});
+				}else
+				{
+					//old node and NEW connect
+					if(edges.get(out_edge) == null)
+					{
+						edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#2B7CE9", width: 1});
+					}else
+					{	//old node and MORE connect
+						var new_width = edges.get(out_edge).width + 0.1;
+						// console.log(new_width);
+						edges.update({id: out_edge, width: new_width});
+					}
 				}
 				
+				console.log("內到外");		
+				console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
+				console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
 
-			}else if(obj_msg["oob.out"]=="ppp0"){
-				var out_ip = obj_msg["src_ip"];
-				var out_edge = out_ip + "2";
-
-				if(nodes_data.find(({ id }) => id === out_ip) == undefined &&
-					edges_data.find(({ id }) => id === out_edge) == undefined)
-				{
-					var new_node = {id: out_ip, label: out_ip, color: {border: "green", background: "lightgreen"}};
-					var new_edge = {id: out_edge, from: '10.255.255.101', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color: "green"}
-					nodes_data.push(new_node);
-					edges_data.push(new_edge);
-					//console.log(new_node);
-					console.log(nodes_data);
-					console.log(edges_data);
-					draw();
+			}else if (obj_msg["oob.in"]=="eth0")
+			{
+				if(nodes.get('main_ip').label == '10.255.255.N'){
+					nodes.update({id:'main_ip', label: obj_msg["dest_ip"]});
 				}
-
-			}else if(obj_msg["oob.out"]==""){
-				var out_ip = obj_msg["src_ip"];
-				var out_edge = out_ip + "3";
-
-				if(nodes_data.find(({ id }) => id === out_ip) == undefined &&
-					edges_data.find(({ id }) => id === out_edge) == undefined)
+				//外面連Gateway
+				if(obj_msg["oob.out"]=="")
 				{
-					var new_node = {id: out_ip, label: out_ip, color: {border: "orange", background: "lightyellow"}};
-					var new_edge = {id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}}
-					nodes_data.push(new_node);
-					edges_data.push(new_edge);
-					//console.log(new_node);
-					console.log(nodes_data);
-					console.log(edges_data);
-					draw();
+					var out_ip = obj_msg["src_ip"];
+					var out_edge = out_ip + "3";
+					//NEW node and new connect
+					if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
+					{
+						nodes.add({id: out_ip, label: out_ip, color: {border: "orange", background: "lightyellow"}});
+						edges.add({id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}, width: 1});
+
+					}else
+					{	//old node and MORE connect
+						var new_width = edges.get(out_edge).width + 0.1;
+						// console.log(new_width);
+						edges.update({id: out_edge, width: new_width});
+					}
+
+					console.log("外到S")					
+					console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
+					console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
+				}else
+				{ //外面連內網
+					var out_ip = obj_msg["src_ip"];
+					var out_edge = out_ip + "2";
+					//NEW node and new connect					
+					if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
+					{
+						nodes.add({id: out_ip, label: out_ip, color: {border: "green", background: "#CCFF99"}});
+					//NEW node and new connect
+						edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"green", width: 1});
+					}else
+					{	//old node and NEW connect
+						if(edges.get(out_edge) == null)
+						{
+							edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"green", width: 1});
+						}else
+						{	//old node and MORE connect
+							var new_width = edges.get(out_edge).width + 0.1;
+							// console.log(new_width);
+							edges.update({id: out_edge, width: new_width});
+						}
+					}
+					
+
+					console.log("外到內");
+					console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
+					console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
 				}
+			}else{
+				console("I AM OUT!!!!!!!!!!!!1");
+				console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
+				console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
+
 			}
+			network.setData(data);
 		}
 
 		function onConnect() {
