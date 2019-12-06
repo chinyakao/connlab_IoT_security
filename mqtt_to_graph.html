@@ -74,7 +74,10 @@
 					//old node and NEW connect
 					if(edges.get(out_edge) == null)
 					{
-						edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#2B7CE9", width: 1});
+						var edge_change_color = out_ip + "2";
+						nodes.update({id: out_ip, color: {border: "#7700BB", background: "#E8CCFF"}});
+						edges.update({id:　edge_change_color, color:"#7700BB"});
+						edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#7700BB", width: 1});
 					}else
 					{	//old node and MORE connect
 						var new_width = edges.get(out_edge).width + 0.1;
@@ -104,10 +107,16 @@
 						edges.add({id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}, width: 1});
 
 					}else
-					{	//old node and MORE connect
-						var new_width = edges.get(out_edge).width + 0.1;
-						// console.log(new_width);
-						edges.update({id: out_edge, width: new_width});
+					{	//old node and NEW connect
+						if(edges.get(out_edge) == null)
+						{
+						edges.add({id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}, width: 1});
+						}else
+						{	//old node and MORE connect
+							var new_width = edges.get(out_edge).width + 0.1;
+							edges.update({id: out_edge, width: new_width});
+						}
+
 					}
 
 					console.log("外到S")					
@@ -121,13 +130,15 @@
 					if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
 					{
 						nodes.add({id: out_ip, label: out_ip, color: {border: "green", background: "#CCFF99"}});
-					//NEW node and new connect
 						edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"green", width: 1});
 					}else
 					{	//old node and NEW connect
 						if(edges.get(out_edge) == null)
 						{
-							edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"green", width: 1});
+							var edge_change_color = out_ip + "1";
+							nodes.update({id: out_ip, color: {border: "#7700BB", background: "#E8CCFF"}});						
+							edges.update({id:　edge_change_color, color:"#7700BB"});			
+							edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"#7700BB", width: 1});
 						}else
 						{	//old node and MORE connect
 							var new_width = edges.get(out_edge).width + 0.1;
