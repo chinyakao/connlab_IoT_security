@@ -75,9 +75,15 @@ function CountNode(){
   //console.log(type4.length); 
   setTimeout('CountNode()',1000);
 }
-   
 
-
+//click Node
+network.on("click", function(params) {
+  console.log(params);
+  params.event = "[original event]";
+  document.getElementById("node_info").innerHTML =
+    "<h2>Click event:</h2>" + JSON.stringify(params, null, 4);
+  // console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
+});
 
 
 //MQTT
@@ -164,8 +170,9 @@ function onMessageArrived(msg)
       if(obj_msg["oob.prefix"] != "")
       {
         nodes.update({id: out_ip, color: "#e74a3b"});
-          console.log(obj_msg);
       }
+      console.log(obj_msg["oob.prefix"]);
+
 
       // console.log("外到S");        
       // console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
