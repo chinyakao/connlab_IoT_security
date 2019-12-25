@@ -55,10 +55,30 @@ setInterval(function () {
       }
       console.log("remove!!!!!!!");
     });   
-    network.setData(data);  
+    network.setData(data);
   }
   // console.log(disconnect);
+  
 }, 40000);
+
+//count Node
+function CountNode(){
+  var type1 = nodes.get({filter: function (ip) {return(ip.ipType == 1);}});
+  var type2 = nodes.get({filter: function (ip) {return(ip.ipType == 2);}});
+  var type3 = nodes.get({filter: function (ip) {return(ip.ipType == 3);}});
+  var type4 = nodes.get({filter: function (ip) {return(ip.ipType == 4);}});
+
+  document.getElementById('server_to_ip').innerHTML =type1.length;
+  document.getElementById('ip_to_server').innerHTML =type2.length;
+  document.getElementById('ip_server').innerHTML =type4.length;
+  document.getElementById('ip_to_gateway').innerHTML =type3.length;
+  //console.log(type4.length); 
+  setTimeout('CountNode()',1000);
+}
+   
+
+
+
 
 //MQTT
 var mqtt;
