@@ -78,10 +78,81 @@ function CountNode(){
 
 //click Node
 network.on("click", function(params) {
-  console.log(params);
-  params.event = "[original event]";
-  document.getElementById("node_info").innerHTML =
-    "<h2>Click event:</h2>" + JSON.stringify(params, null, 4);
+  // console.log(params.nodes[0]);
+  // console.log(params.edges);
+  //click node
+  if(params.nodes[0] != undefined){
+    var name, type, rate, danger, lasttime;
+    var c_node = nodes.get(params.nodes[0]);
+    // console.log(c_node);
+    name = "ip:   　　" + c_node.label;
+    if(c_node.ipType == 1){
+      var c_edge = edges.get(params.nodes[0]+"1");      
+      type = "type:  IP <- Machine";
+      rate = "rate: "+c_edge.width;
+      if(c_edge.width>=2)
+        danger = "danger:　Unsafe";
+      else
+        danger = "danger:　Safe";
+    }else if(c_node.ipType == 2){
+      var c_edge = edges.get(params.nodes[0]+"2");      
+      type = "type:  IP -> Machine";
+      rate = "rate: "+c_edge.width;
+      if(c_edge.width>=2)
+        danger = "danger:　Unsafe";
+      else
+        danger = "danger:　Safe";
+    }else if(c_node.ipType == 3){
+      var c_edge = edges.get(params.nodes[0]+"3");      
+      type = "type:  IP -> Gateway";
+      rate = "rate: "+c_edge.width;
+      if(c_edge.width>=2)
+        danger = "danger:　Unsafe";
+      else
+        danger = "danger:　Safe";
+    }else if(c_node.ipType == 4){
+      var c_edge1 = edges.get(params.nodes[0]+"1");      
+      var c_edge2 = edges.get(params.nodes[0]+"2");      
+      type = "type:  IP <=> Machine";
+      rate = "IP <- Machine rate: "+c_edge1.width+'\n'+"IP -> Machine rate: "+c_edge2.width;
+      if(c_edge1.width>=2||c_edge2.width>=2)
+        danger = "danger:　Unsafe";
+      else
+        danger = "danger:　Safe";
+    }
+    lasttime = "last update: "+new Date(c_node.timestamp);
+    
+    document.getElementById("node_info").innerHTML = name+'\n'+type+'\n'+rate+'\n'+danger+'\n'+lasttime;
+
+  }else //click edge
+  {
+    var src, dest, type, rate, danger, lasttime;
+    var c_edge = edges.get(params.edges[0]);
+    var main_name = nodes.get('main_ip').label;
+    console.log(c_edge);
+    if(c_edge.from == "main_ip"){
+      src = "src IP: " + main_name;
+      dest = "dest IP: "+ c_edge.to;
+      type = "type:  IP <- Machine";
+    }else if(c_edge.to == "main_ip"){
+      src = "src IP: "+c_edge.from;
+      dest = "dest IP: "+ main_name;
+      type = "type:  IP -> Machine";
+    }else{
+      src = "src IP: "+c_edge.from;
+      dest = "dest IP: 172.105.219.146";
+      type = "type:  IP -> Machine";
+    }
+
+    rate = "rate: "+c_edge.width;
+    if(c_edge.width>=2)
+      danger = "danger:　Unsafe";
+    else
+      danger = "danger:　Safe";
+      lasttime = "last update: "+new Date(c_edge.timestamp);
+    document.getElementById("node_info").innerHTML = src+'\n'+dest+'\n'+type+'\n'+rate+'\n'+danger+'\n'+lasttime;    
+  }
+    // "<h2>Click event:</h2>" + JSON.stringify(params, null, 4);
   // console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
 });
 
