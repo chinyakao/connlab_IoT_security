@@ -76,19 +76,65 @@ function CountNode(){
   setTimeout('CountNode()',1000);
 }
 
+//table Node
+function TableNode(){
+  var tableContent="";
+  nodes.forEach(function(ip){
+    var name=ip.label;
+    var temptime = new Date(ip.timestamp);
+    var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
+    var danger = "Safe";
+    if(ip.ipType == 0){
+      var type ="--";
+      var rate = "--";
+      lasttime = "--";
+    }else if(ip.ipType == 1){
+      var type= "IP <- Machine";
+      var rate = edges.get(name+"1").width;
+      if(rate>=1.5)
+        danger ="Unsafe";
+
+    }else if(ip.ipType == 2){
+      var type= "IP -> Machine";
+      var rate =  edges.get(name+"2").width;
+      if(rate>=1.5)
+        danger ="Unsafe";
+
+    }else if(ip.ipType == 3){
+      var type= "IP -> Gateway";
+      var rate = edges.get(name+"3").width;
+      if(rate>=1.5)
+        danger ="Unsafe";
+    }else{
+      var type= "IP <=> Machine";
+      var rate1 = edges.get(name+"1").width;
+      var rate2 = edges.get(name+"2").width;
+      var rate= rate1+" / "+rate2;
+      if(rate1>=1.5||rate2>=1.5)
+        danger ="Unsafe";
+
+    }
+    tableContent = tableContent+"<tr><td>"+name+"</td><td>"+type+"</td><td>"+rate+"</td><td>"+danger+"</td><td>"+lasttime+"</td></tr>";
+  });
+  document.getElementById('myTable').innerHTML =tableContent;
+  setTimeout('TableNode()',1000);
+}
+
 //click Node
 network.on("click", function(params) {
   // console.log(params.nodes[0]);
-  console.log(params);
+  // console.log(params);
   //click node
   if(params.nodes[0] != undefined){
-    var name, type, rate, danger, lasttime;
     var c_node = nodes.get(params.nodes[0]);
     // console.log(c_node);
     document.getElementById("info_name").innerHTML = c_node.label;
     document.getElementById("info_src").innerHTML = "--";
     document.getElementById("info_dest").innerHTML = "--";
     document.getElementById("info_danger").innerHTML ="Safe";
+    var temptime = new Date(c_node.timestamp);
+    var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
+    document.getElementById("info_lasttime").innerHTML = lasttime;
     if(c_node.ipType == 0){
       if(c_node.id == "main_ip")
         document.getElementById("info_type").innerHTML ="Machine";
@@ -96,47 +142,47 @@ network.on("click", function(params) {
         document.getElementById("info_type").innerHTML ="Gateway";
       document.getElementById("info_rate").innerHTML ="--";
       document.getElementById("info_danger").innerHTML ="--";
+      document.getElementById("info_lasttime").innerHTML = "--";
     }else if(c_node.ipType == 1){
       var c_edge = edges.get(params.nodes[0]+"1");      
       document.getElementById("info_type").innerHTML ="IP <- Machine";
       document.getElementById("info_rate").innerHTML =c_edge.width;
       if(c_edge.width>=1.5)
-       document.getElementById("info_danger").innerHTML ="Unsafe";
+        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 2){
       var c_edge = edges.get(params.nodes[0]+"2");      
       document.getElementById("info_type").innerHTML ="IP -> Machine";
       document.getElementById("info_rate").innerHTML =c_edge.width;
       if(c_edge.width>=1.5)
-       document.getElementById("info_danger").innerHTML ="Unsafe";
+        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 3){
       var c_edge = edges.get(params.nodes[0]+"3");      
       document.getElementById("info_type").innerHTML ="IP -> Gateway";
       document.getElementById("info_rate").innerHTML =c_edge.width;
       if(c_edge.width>=1.5)
-       document.getElementById("info_danger").innerHTML ="Unsafe";
+        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 4){
       var c_edge1 = edges.get(params.nodes[0]+"1");      
       var c_edge2 = edges.get(params.nodes[0]+"2");      
       document.getElementById("info_type").innerHTML ="IP <=> Machine";
-      document.getElementById("info_rate").innerHTML ="IP <- Machine rate: "+c_edge1.width+'\n'+"IP -> Machine rate: "+c_edge2.width;
+      document.getElementById("info_rate").innerHTML =c_edge1.width+" / "+c_edge2.width;
       if(c_edge1.width>=1.5||c_edge2.width>=1.5)
-       document.getElementById("info_danger").innerHTML ="Unsafe";
+        document.getElementById("info_danger").innerHTML ="Unsafe";
     }
-      document.getElementById("info_lasttime").innerHTML = new Date(c_node.timestamp);
-    
-    // document.getElementById("node_info").innerHTML = name+'\n'+type+'\n'+rate+'\n'+danger+'\n'+lasttime;
-
   }else if(params.edges[0] != undefined){
-    var src, dest, type, rate, danger, lasttime;
     var c_edge = edges.get(params.edges[0]);
     var main_name = nodes.get('main_ip').label;
     document.getElementById("info_name").innerHTML = "--";
-    document.getElementById("info_danger").innerHTML ="Safe";
-    // console.log(c_edge);
+    document.getElementById("info_rate").innerHTML =c_edge.width;
+    var temptime = new Date(c_edge.timestamp);
+    var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
+    document.getElementById("info_lasttime").innerHTML = lasttime;
     if(c_edge.id == 0){
       document.getElementById("info_src").innerHTML = main_name;
       document.getElementById("info_dest").innerHTML = "172.105.219.146";
+      document.getElementById("info_rate").innerHTML ="--";
       document.getElementById("info_type").innerHTML ="Server";
+      document.getElementById("info_lasttime").innerHTML = "--";
     }else if(c_edge.from == "main_ip"){
       document.getElementById("info_src").innerHTML = main_name;
       document.getElementById("info_dest").innerHTML = c_edge.to;
@@ -150,14 +196,12 @@ network.on("click", function(params) {
       document.getElementById("info_dest").innerHTML = "172.105.219.146";
       document.getElementById("info_type").innerHTML ="IP -> Machine";
     }
-    document.getElementById("info_rate").innerHTML =c_edge.width;
     if(c_edge.width>=1.5)
       document.getElementById("info_danger").innerHTML ="Unsafe";
-    document.getElementById("info_lasttime").innerHTML = new Date(c_edge.timestamp);
-    // document.getElementById("node_info").innerHTML = src+'\n'+dest+'\n'+type+'\n'+rate+'\n'+danger+'\n'+lasttime;    
+    else
+      document.getElementById("info_danger").innerHTML ="Safe";
+
   }
-    // "<h2>Click event:</h2>" + JSON.stringify(params, null, 4);
-  // console.log("click event, getNodeAt returns: " + this.getNodeAt(params.pointer.DOM));
 });
 
 

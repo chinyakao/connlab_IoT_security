@@ -38,11 +38,12 @@
       text-align: left;
       padding: 8px;
     }
+    tr:nth-child(odd) {background-color: #F8F9FC;}
   </style>
 
 </head>
 
-<body id="page-top" onload="ShowTime()+CountNode()">
+<body id="page-top" onload="ShowTime()+CountNode()+TableNode()">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -81,7 +82,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ip <- Machine</div>
+                      <div class="font-weight-bold text-primary text-uppercase mb-1">Ip <- Machine (out)</div>
                     </div>
                     <div class="col-auto">
                       <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="server_to_ip"></div>
@@ -97,7 +98,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ip -> Machine</div>
+                      <div class="font-weight-bold text-success text-uppercase mb-1">Ip -> Machine (in)</div>
                     </div>
                     <div class="col-auto">
                       <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="ip_to_server"></div>
@@ -113,7 +114,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ip <=> Machine</div>
+                      <div class="font-weight-bold text-info text-uppercase mb-1">Ip <=> Machine</div>
                       <div class="row no-gutters align-items-center"></div>
                     </div>
                     <div class="col-auto">
@@ -130,7 +131,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Ip -> Gateway</div>
+                      <div class="font-weight-bold text-warning text-uppercase mb-1">Ip -> Gateway</div>
                     </div>
                     <div class="col-auto">
                       <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="ip_to_gateway"></div>
@@ -145,7 +146,7 @@
 
           <div class="row">
 
-            <!-- Area Chart -->
+            <!-- Network Graph -->
             <div class="col-xl-8 col-lg-7">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -157,7 +158,7 @@
               </div>
             </div>
 
-            <!-- Pie Chart -->
+            <!-- IP Info -->
             <div class="col-xl-4 col-lg-5">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -165,34 +166,34 @@
                   <h6 class="m-0 font-weight-bold text-primary">IP Info</h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body" style="height: 400px; white-space: pre-line;">
+                <div class="card-body" style="height: 400px;">
                   <table>
                     <tr>
-                      <td>IP</td>
+                      <td style="font-weight:bold;">IP</td>
                       <td id="info_name"></td>
                     </tr>
                     <tr>
-                      <td>SRC IP</td>
+                      <td style="font-weight:bold;">SRC IP</td>
                       <td id="info_src"></td>
                     </tr>
                      <tr>
-                      <td>DEST IP</td>
+                      <td style="font-weight:bold;">DEST IP</td>
                       <td id="info_dest"></td>
                     </tr>
                     <tr>
-                      <td>TYPE</td>
+                      <td style="font-weight:bold;">TYPE</td>
                       <td id="info_type"></td>
                     </tr>
                     <tr>
-                      <td>RATE</td>
+                      <td style="font-weight:bold;">RATE (out / in)</td>
                       <td id="info_rate"></td>
                     </tr>
                     <tr>
-                      <td>DANGER</td>
+                      <td style="font-weight:bold;">DANGER</td>
                       <td id="info_danger"></td>
                     </tr>
                     <tr>
-                      <td>LAST UPDATE</td>
+                      <td style="font-weight:bold;">LAST UPDATE</td>
                       <td id="info_lasttime"></td>
                     </tr>
                     
@@ -216,59 +217,32 @@
             </div>
           </div>
 
-          <!-- DataTales Example -->
+          <!-- IP Table -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+              <h6 class="m-0 font-weight-bold text-primary">IP Table</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
+                      <th>IP</th>
+                      <th>Type</th>
+                      <th>Rate (out / in)</th>
+                      <th>Danger</th>
+                      <th>Last Update</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
-                    </tr>
+                      <th>IP</th>
+                      <th>Type</th>
+                      <th>Rate (out / in)</th>
+                      <th>Danger</th>
+                      <th>Last Update</th>
                   </tfoot>
-                  <tbody>
-                    <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
-                      <td>2011/04/25</td>
-                      <td>$320,800</td>
-                    </tr>
-                    <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>63</td>
-                      <td>2011/07/25</td>
-                      <td>$170,750</td>
-                    </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>66</td>
-                      <td>2009/01/12</td>
-                      <td>$86,000</td>
-                    </tr>
+                  <tbody id="myTable">
                   </tbody>
                 </table>
               </div>
@@ -285,7 +259,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
+            <span>Copyright &copy; Connlab IoT Security 2019</span>
           </div>
         </div>
       </footer>
