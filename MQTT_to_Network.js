@@ -91,13 +91,13 @@ function TableNode(){
       rate = "--";
       lasttime = "--";
     }else if(ip.ipType == 1){
-      type= "IP <- Machine";
+      type= "IP <- Intranet";
       rate = (edges.get(name+"1").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
 
     }else if(ip.ipType == 2){
-      type= "IP -> Machine";
+      type= "IP -> Intranet";
       rate =  (edges.get(name+"2").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
@@ -108,7 +108,7 @@ function TableNode(){
       if(rate>=1.5)
         danger ="Unsafe";
     }else{
-      type= "IP <=> Machine";
+      type= "IP <=> Intranet";
       var rate1 = (edges.get(name+"1").width).toFixed(2);
       var rate2 = (edges.get(name+"2").width).toFixed(2);
       rate= rate1+" / "+rate2;
@@ -139,7 +139,7 @@ network.on("click", function(params) {
     document.getElementById("info_lasttime").innerHTML = lasttime;
     if(c_node.ipType == 0){
       if(c_node.id == "main_ip")
-        document.getElementById("info_type").innerHTML ="Machine";
+        document.getElementById("info_type").innerHTML ="Intranet";
       else
         document.getElementById("info_type").innerHTML ="Gateway";
       document.getElementById("info_rate").innerHTML ="--";
@@ -147,13 +147,13 @@ network.on("click", function(params) {
       document.getElementById("info_lasttime").innerHTML = "--";
     }else if(c_node.ipType == 1){
       var c_edge = edges.get(params.nodes[0]+"1");      
-      document.getElementById("info_type").innerHTML ="IP <- Machine";
+      document.getElementById("info_type").innerHTML ="IP <- Intranet";
       document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
       if(c_edge.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 2){
       var c_edge = edges.get(params.nodes[0]+"2");      
-      document.getElementById("info_type").innerHTML ="IP -> Machine";
+      document.getElementById("info_type").innerHTML ="IP -> Intranet";
       document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
       if(c_edge.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
@@ -166,7 +166,7 @@ network.on("click", function(params) {
     }else if(c_node.ipType == 4){
       var c_edge1 = edges.get(params.nodes[0]+"1");      
       var c_edge2 = edges.get(params.nodes[0]+"2");      
-      document.getElementById("info_type").innerHTML ="IP <=> Machine";
+      document.getElementById("info_type").innerHTML ="IP <=> Intranet";
       document.getElementById("info_rate").innerHTML =(c_edge1.width).toFixed(2)+" / "+(c_edge2.width).toFixed(2);
       if(c_edge1.width>=1.5||c_edge2.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
@@ -188,15 +188,15 @@ network.on("click", function(params) {
     }else if(c_edge.from == "main_ip"){
       document.getElementById("info_src").innerHTML = main_name;
       document.getElementById("info_dest").innerHTML = c_edge.to;
-      document.getElementById("info_type").innerHTML ="IP <- Machine";
+      document.getElementById("info_type").innerHTML ="IP <- Intranet";
     }else if(c_edge.to == "main_ip"){
       document.getElementById("info_src").innerHTML =c_edge.from;
       document.getElementById("info_dest").innerHTML = main_name;
-      document.getElementById("info_type").innerHTML ="IP -> Machine";
+      document.getElementById("info_type").innerHTML ="IP -> Intranet";
     }else{
       document.getElementById("info_src").innerHTML =c_edge.from;
       document.getElementById("info_dest").innerHTML = "172.105.219.146";
-      document.getElementById("info_type").innerHTML ="IP -> Machine";
+      document.getElementById("info_type").innerHTML ="IP -> Intranet";
     }
     if(c_edge.width>=1.5)
       document.getElementById("info_danger").innerHTML ="Unsafe";
