@@ -6,7 +6,7 @@ var nodes = new vis.DataSet([
 ]);
 // create an array with edges
 var edges = new vis.DataSet([
-  {id: 0, from: 'main_ip', to: 'Server', timestamp: ""}
+  {id: 0, from: 'main_ip', to: 'Server', timestamp: "", width: 1}
 ]);
 // create a network
 var container = document.getElementById('mynetwork');
@@ -84,36 +84,38 @@ function TableNode(){
     var temptime = new Date(ip.timestamp);
     var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
     var danger = "Safe";
+    var type;
+    var rate;
     if(ip.ipType == 0){
-      var type ="--";
-      var rate = "--";
+      type ="--";
+      rate = "--";
       lasttime = "--";
     }else if(ip.ipType == 1){
-      var type= "IP <- Machine";
-      var rate = edges.get(name+"1").width;
+      type= "IP <- Machine";
+      rate = (edges.get(name+"1").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
 
     }else if(ip.ipType == 2){
-      var type= "IP -> Machine";
-      var rate =  edges.get(name+"2").width;
+      type= "IP -> Machine";
+      rate =  (edges.get(name+"2").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
 
     }else if(ip.ipType == 3){
-      var type= "IP -> Gateway";
-      var rate = edges.get(name+"3").width;
+      type= "IP -> Gateway";
+      rate = (edges.get(name+"3").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
     }else{
-      var type= "IP <=> Machine";
-      var rate1 = edges.get(name+"1").width;
-      var rate2 = edges.get(name+"2").width;
-      var rate= rate1+" / "+rate2;
+      type= "IP <=> Machine";
+      var rate1 = (edges.get(name+"1").width).toFixed(2);
+      var rate2 = (edges.get(name+"2").width).toFixed(2);
+      rate= rate1+" / "+rate2;
       if(rate1>=1.5||rate2>=1.5)
         danger ="Unsafe";
-
     }
+      // console.log(rate);
     tableContent = tableContent+"<tr><td>"+name+"</td><td>"+type+"</td><td>"+rate+"</td><td>"+danger+"</td><td>"+lasttime+"</td></tr>";
   });
   document.getElementById('myTable').innerHTML =tableContent;
@@ -146,26 +148,26 @@ network.on("click", function(params) {
     }else if(c_node.ipType == 1){
       var c_edge = edges.get(params.nodes[0]+"1");      
       document.getElementById("info_type").innerHTML ="IP <- Machine";
-      document.getElementById("info_rate").innerHTML =c_edge.width;
+      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
       if(c_edge.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 2){
       var c_edge = edges.get(params.nodes[0]+"2");      
       document.getElementById("info_type").innerHTML ="IP -> Machine";
-      document.getElementById("info_rate").innerHTML =c_edge.width;
+      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
       if(c_edge.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 3){
       var c_edge = edges.get(params.nodes[0]+"3");      
       document.getElementById("info_type").innerHTML ="IP -> Gateway";
-      document.getElementById("info_rate").innerHTML =c_edge.width;
+      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
       if(c_edge.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 4){
       var c_edge1 = edges.get(params.nodes[0]+"1");      
       var c_edge2 = edges.get(params.nodes[0]+"2");      
       document.getElementById("info_type").innerHTML ="IP <=> Machine";
-      document.getElementById("info_rate").innerHTML =c_edge1.width+" / "+c_edge2.width;
+      document.getElementById("info_rate").innerHTML =(c_edge1.width).toFixed(2)+" / "+(c_edge2.width).toFixed(2);
       if(c_edge1.width>=1.5||c_edge2.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
     }
@@ -173,7 +175,7 @@ network.on("click", function(params) {
     var c_edge = edges.get(params.edges[0]);
     var main_name = nodes.get('main_ip').label;
     document.getElementById("info_name").innerHTML = "--";
-    document.getElementById("info_rate").innerHTML =c_edge.width;
+    document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
     var temptime = new Date(c_edge.timestamp);
     var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
     document.getElementById("info_lasttime").innerHTML = lasttime;
