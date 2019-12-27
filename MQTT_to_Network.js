@@ -1,13 +1,10 @@
 //NETWORK GRAPH
 // create an array with nodes
 var nodes = new vis.DataSet([
-  {id: 'main_ip', label: '10.255.255.N', x: 0, y: 0, color: "#858796", timestamp: "", ipType: 0, font: {color: 'white'}},
-  {id: 'Server', label: '172.105.219.146',x: -1, y: 0,color: "#858796", timestamp: "", ipType: 0, font: {color: 'white'}},
+  {id: '172.105.219.146', label: '172.105.219.146',x: 0, y: 0,color: "#858796", timestamp: "", ipType: 0, font: {color: 'white'}},
 ]);
 // create an array with edges
-var edges = new vis.DataSet([
-  {id: 0, from: 'main_ip', to: 'Server', timestamp: "", width: 1}
-]);
+var edges = new vis.DataSet([]);
 // create a network
 var container = document.getElementById('mynetwork');
 var data = {
@@ -55,7 +52,7 @@ setInterval(function () {
       }
       console.log("remove!!!!!!!");
     });   
-    network.setData(data);
+    //network.setData(data);
   }
   // console.log(disconnect);
   
@@ -76,7 +73,7 @@ function CountNode(){
   setTimeout('CountNode()',1000);
 }
 
-//table Node
+// table Node
 function TableNode(){
   var tableContent="";
   nodes.forEach(function(ip){
@@ -122,47 +119,40 @@ function TableNode(){
   setTimeout('TableNode()',1000);
 }
 
-//click Node
+// click Node
 network.on("click", function(params) {
   // console.log(params.nodes[0]);
-  // console.log(params);
+  console.log(params);
   //click node
   if(params.nodes[0] != undefined){
     var c_node = nodes.get(params.nodes[0]);
-    // console.log(c_node);
+    var c_edge = edges.get(params.edges[0]);
+    var temptime = new Date(c_node.timestamp);
+    var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
+    document.getElementById("info_lasttime").innerHTML = lasttime;      
     document.getElementById("info_name").innerHTML = c_node.label;
     document.getElementById("info_src").innerHTML = "--";
     document.getElementById("info_dest").innerHTML = "--";
-    document.getElementById("info_danger").innerHTML ="Safe";
-    var temptime = new Date(c_node.timestamp);
-    var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
-    document.getElementById("info_lasttime").innerHTML = lasttime;
+    document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
+    if(c_edge.width>=1.5)
+      document.getElementById("info_danger").innerHTML ="Unsafe";
+    else
+      document.getElementById("info_danger").innerHTML ="Safe";
+    
     if(c_node.ipType == 0){
-      if(c_node.id == "main_ip")
-        document.getElementById("info_type").innerHTML ="Intranet";
+      if(c_node.id == "172.105.219.146")
+        document.getElementById("info_type").innerHTML ="Server";
       else
-        document.getElementById("info_type").innerHTML ="Gateway";
+        document.getElementById("info_type").innerHTML ="Intranet";
       document.getElementById("info_rate").innerHTML ="--";
       document.getElementById("info_danger").innerHTML ="--";
       document.getElementById("info_lasttime").innerHTML = "--";
     }else if(c_node.ipType == 1){
-      var c_edge = edges.get(params.nodes[0]+"1");      
       document.getElementById("info_type").innerHTML ="IP <- Intranet";
-      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
-      if(c_edge.width>=1.5)
-        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 2){
-      var c_edge = edges.get(params.nodes[0]+"2");      
       document.getElementById("info_type").innerHTML ="IP -> Intranet";
-      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
-      if(c_edge.width>=1.5)
-        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 3){
-      var c_edge = edges.get(params.nodes[0]+"3");      
       document.getElementById("info_type").innerHTML ="IP -> Gateway";
-      document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
-      if(c_edge.width>=1.5)
-        document.getElementById("info_danger").innerHTML ="Unsafe";
     }else if(c_node.ipType == 4){
       var c_edge1 = edges.get(params.nodes[0]+"1");      
       var c_edge2 = edges.get(params.nodes[0]+"2");      
@@ -170,33 +160,33 @@ network.on("click", function(params) {
       document.getElementById("info_rate").innerHTML =(c_edge1.width).toFixed(2)+" / "+(c_edge2.width).toFixed(2);
       if(c_edge1.width>=1.5||c_edge2.width>=1.5)
         document.getElementById("info_danger").innerHTML ="Unsafe";
+    }else if(c_node.ipType == 5){
+      document.getElementById("info_type").innerHTML ="IP -> Gateway";
+      document.getElementById("info_danger").innerHTML ="Unsafe";
     }
   }else if(params.edges[0] != undefined){
     var c_edge = edges.get(params.edges[0]);
-    var main_name = nodes.get('main_ip').label;
-    document.getElementById("info_name").innerHTML = "--";
-    document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
     var temptime = new Date(c_edge.timestamp);
     var lasttime = temptime.getHours()+":"+temptime.getMinutes()+":"+temptime.getSeconds();
     document.getElementById("info_lasttime").innerHTML = lasttime;
-    if(c_edge.id == 0){
-      document.getElementById("info_src").innerHTML = main_name;
-      document.getElementById("info_dest").innerHTML = "172.105.219.146";
+    document.getElementById("info_name").innerHTML = "--";
+    document.getElementById("info_rate").innerHTML =(c_edge.width).toFixed(2);
+    document.getElementById("info_src").innerHTML = c_edge.from;
+    document.getElementById("info_dest").innerHTML = c_edge.to;
+    
+    if(c_edge.conType == 0){
       document.getElementById("info_rate").innerHTML ="--";
-      document.getElementById("info_type").innerHTML ="Server";
+      document.getElementById("info_type").innerHTML ="Intranet";
       document.getElementById("info_lasttime").innerHTML = "--";
-    }else if(c_edge.from == "main_ip"){
-      document.getElementById("info_src").innerHTML = main_name;
-      document.getElementById("info_dest").innerHTML = c_edge.to;
+    }else if(c_edge.conType == 1){
       document.getElementById("info_type").innerHTML ="IP <- Intranet";
-    }else if(c_edge.to == "main_ip"){
-      document.getElementById("info_src").innerHTML =c_edge.from;
-      document.getElementById("info_dest").innerHTML = main_name;
+    }else if(c_edge.conType == 2){
       document.getElementById("info_type").innerHTML ="IP -> Intranet";
-    }else{
-      document.getElementById("info_src").innerHTML =c_edge.from;
-      document.getElementById("info_dest").innerHTML = "172.105.219.146";
-      document.getElementById("info_type").innerHTML ="IP -> Intranet";
+    }else if(c_edge.conType == 3){
+      document.getElementById("info_type").innerHTML ="IP -> Gateway";
+    }else if(c_edge.conType == 5){
+      document.getElementById("info_type").innerHTML ="IP -> Gateway";
+      document.getElementById("info_danger").innerHTML ="Unsafe";
     }
     if(c_edge.width>=1.5)
       document.getElementById("info_danger").innerHTML ="Unsafe";
@@ -205,6 +195,56 @@ network.on("click", function(params) {
 
   }
 });
+
+function getServer(ip)
+{
+  nodes.add({id: ip, label: ip, color: "#858796", timestamp: "", ipType: 0, font: {color: 'white'}});
+  edges.add({id: ip+"0", from: ip, to: "172.105.219.146", timestamp: "", width: 1, conType: 0});
+  return;
+}
+
+function NewnodeNewedge(src, dest, ipType, times)
+{
+  if(ipType == 1){
+    nodes.add({id: dest, label: dest, color: "#4e73df", timestamp: times, ipType: 1, font: {color: 'white'}});
+    edges.add({id: dest+"1", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#4e73df", width: 1, timestamp: times, conType: 1});
+  }else if(ipType == 2){
+    nodes.add({id: src, label: src, color: "#1cc88a", timestamp: times, ipType: 2, font: {color: 'white'}});
+    edges.add({id: src+"2", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#1cc88a", width: 1, timestamp: times, conType: 2});
+  }else if(ipType == 3){
+    nodes.add({id: src, label: src, color: "#f6c23e", timestamp: times, ipType: 3, font: {color: 'white'}});
+    edges.add({id: src+"3", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, width: 1, timestamp: times, conType: 3});
+  }
+  return;
+}
+
+function OldnodeNewedge(src, dest, newType, times){
+  if(newType == 1){
+    nodes.update({id: dest, color: "#36b9cc", timestamp: times, ipType: 4});
+    edges.update({id:　dest+"2", color:"#36b9cc"});
+    edges.add({id: dest+"1", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#36b9cc", width: 1, timestamp: times, conType: 1});
+  }else if(newType == 2){
+    nodes.update({id: src, color: "#36b9cc", timestamp: times, ipType: 4});
+    edges.update({id:　src+"1", color:"#36b9cc"}); 
+    edges.add({id: src+"2", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#36b9cc", width: 1, timestamp: times, conType: 2});
+  }else if(newType == 3){
+    edges.add({id: src+"33", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#f6c23e", width: 1, timestamp: times, conType: 3});
+    console.log(obj_msg);
+  }
+  return;
+}
+
+function Moreedge(ip_edge, times){
+  var new_width = edges.get(ip_edge).width + 0.01;
+  edges.update({id: ip_edge, width: new_width, timestamp: times});
+  return;
+}
+
+function alertDanger(ip){
+  nodes.update({id: ip, color: "#e74a3b", ipType: 5});
+  edges.update({id: ip+"3", color: "#e74a3b", conType:5});
+  return;
+}
 
 
 //MQTT
@@ -217,128 +257,57 @@ function onFailure(message) {
   console.log("Connection Attempt to Host "+host+"Failed");
   setTimeout(MQTTconnect, reconnectTimeout);
 }
+
 function onMessageArrived(msg)
 {
   var str_msg = msg.payloadString;
   var obj_msg = JSON.parse(str_msg);
-  // console.log(obj_msg);
-  // console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]+ " // oob.out: " +obj_msg["oob.out"]);
-
+  var srcIp = obj_msg["src_ip"];
+  var destIp = obj_msg["dest_ip"];
+  
+  console.log(obj_msg);
   //內網連外面
   if(obj_msg["oob.out"]=="eth0")
   {
-    if(nodes.get('main_ip').label == '10.255.255.N'){
-      nodes.update({id:'main_ip', label: obj_msg["src_ip"]});
-    }
+    if(nodes.get(srcIp)==null) 
+      getServer(srcIp);
 
-    var out_ip = obj_msg["dest_ip"];
-    var out_edge = out_ip + "1";
-    var out_time = obj_msg["timestamp"];
-    //NEW node and new connect
-    if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
-    {
-      nodes.add({id: out_ip, label: out_ip, color: "#4e73df", timestamp: out_time, ipType: 1, font: {color: 'white'}});
-      edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#4e73df", width: 1, timestamp: out_time});
-    }else
-    {
-      //old node and NEW connect
-      if(edges.get(out_edge) == null)
-      {
-        var edge_change_color = out_ip + "2";
-        nodes.update({id: out_ip, color: "#36b9cc", timestamp: out_time, ipType: 4});
-        edges.update({id:　edge_change_color, color:"#36b9cc"});
-        edges.add({id: out_edge, from: 'main_ip', to: out_ip, arrows:{to: {enabled: true, type: "triangle"}}, color:"#36b9cc", width: 1, timestamp: out_time});
-      }else
-      { //old node and MORE connect
-        var new_width = edges.get(out_edge).width + 0.01;
-        edges.update({id: out_edge, width: new_width, timestamp: out_time});
-      }
-    }
-    
-    // console.log("內到外");    
-    // console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
-    // console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
+    if(nodes.get(destIp) == null && edges.get(destIp+"1") == null) 
+      NewnodeNewedge(srcIp, destIp, 1, obj_msg["timestamp"]);
+    else if(edges.get(destIp+"1") == null)
+      OldnodeNewedge(srcIp, destIp, 1, obj_msg["timestamp"]);
+    else
+      Moreedge(destIp+"1", obj_msg["timestamp"]);
 
-  }else if (obj_msg["oob.in"]=="eth0")
+  }else if (obj_msg["oob.in"]=="eth0" && obj_msg["oob.out"]=="")
   {
-    //外面連Gateway
-    if(obj_msg["oob.out"]=="")
-    {
-      var out_ip = obj_msg["src_ip"];
-      var out_edge = out_ip + "3";
-      var out_time = obj_msg["timestamp"];
+    if(nodes.get(srcIp) == null && edges.get(srcIp+"3") == null) 
+      NewnodeNewedge(srcIp, destIp, 3, obj_msg["timestamp"]);
+    else if(edges.get(srcIp+"3") == null)
+      OldnodeNewedge(srcIp, destIp, 3, obj_msg["timestamp"]);
+    else
+      Moreedge(srcIp+"3", obj_msg["timestamp"]);
 
-      //NEW node and new connect
-      if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
-      {
-        
-        nodes.add({id: out_ip, label: out_ip, color: "#f6c23e", timestamp: out_time, ipType: 3, font: {color: 'white'}});
-        edges.add({id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}, width: 1, timestamp: out_time});
+    if(obj_msg["oob.prefix"] != "")
+      alertDanger(srcIp);
 
-      }else
-      { //old node and NEW connect
-        if(edges.get(out_edge) == null)
-        {
-          edges.add({id: out_edge, from: out_ip, to: 'Server', arrows:{to: {enabled: true, type: "triangle"}}, color:"#f6c23e", width: 1, timestamp: out_time});
-          console.log(obj_msg);
-        }else
-        { //old node and MORE connect
-          var new_width = edges.get(out_edge).width + 0.01;
-          edges.update({id: out_edge, width: new_width, timestamp: out_time});
-        }
+  }else if (obj_msg["oob.in"]=="eth0" && obj_msg["oob.out"]!="")
+  {
+    if(nodes.get(destIp)==null) 
+      getServer(destIp);
 
-      }
-      if(obj_msg["oob.prefix"] != "")
-      {
-        nodes.update({id: out_ip, color: "#e74a3b"});
-      }
-      console.log(obj_msg["oob.prefix"]);
-
-
-      // console.log("外到S");        
-      // console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
-      // console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
-    }else
-    { //外面連內網
-      if(nodes.get('main_ip').label == '10.255.255.N'){
-        nodes.update({id:'main_ip', label: obj_msg["dest_ip"]});
-      }
-        
-      var out_ip = obj_msg["src_ip"];
-      var out_edge = out_ip + "2";
-      var out_time = obj_msg["timestamp"];
-
-      //NEW node and new connect          
-      if(nodes.get(out_ip) == null && edges.get(out_edge) == null)
-      {
-        nodes.add({id: out_ip, label: out_ip, color: "#1cc88a", timestamp: out_time, ipType: 2, font: {color: 'white'}});
-        edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"#1cc88a", width: 1, timestamp: out_time});
-      }else
-      { //old node and NEW connect
-        if(edges.get(out_edge) == null)
-        {
-          var edge_change_color = out_ip + "1";
-          nodes.update({id: out_ip, color: "#36b9cc", timestamp: out_time, ipType: 4});
-          edges.update({id:　edge_change_color, color:"#36b9cc"}); 
-          edges.add({id: out_edge, from: out_ip, to: 'main_ip', arrows:{to: {enabled: true, type: "triangle"}}, color:"#36b9cc", width: 1, timestamp: out_time});
-        }else
-        { //old node and MORE connect
-          var new_width = edges.get(out_edge).width + 0.01;
-          edges.update({id: out_edge, width: new_width, timestamp: out_time});
-        }
-      }
-    
-      // console.log("外到內");
-      // console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
-      // console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
-    }
-  }else{
-    console("I AM OUT!!!!!!!!!!!!1");
-    console.log("src:"+ obj_msg["src_ip"]+ "// dest:"+ obj_msg["dest_ip"]);
-    console.log("oob.in: "+ obj_msg["oob.in"]+ " // oob.out: " +obj_msg["oob.out"]);
-
+    if(nodes.get(srcIp) == null && edges.get(srcIp+"2") == null) 
+      NewnodeNewedge(srcIp, destIp, 2, obj_msg["timestamp"]);
+    else if(edges.get(srcIp+"2") == null)
+      OldnodeNewedge(srcIp, destIp, 2, obj_msg["timestamp"]);
+    else
+      Moreedge(srcIp+"2", obj_msg["timestamp"]);
+  }else
+  {
+    console.log("I AM OUT!!!!!!!!!!!!1");
+    console.log(obj_msg);
   }
-  // network.setData(data);
+  // network.setData(data); 
 }
 
 function onConnect() {

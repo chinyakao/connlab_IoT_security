@@ -3,6 +3,11 @@
 
 ## Question
 	Unsafe 的定義 目前訂 width >= 1.5 就顯示 Unsafe
+## Bug
+	危險ip的顯示 更新時的顏色不會換回來
+	新增time line chart
+	新增edge table
+	option 可調整time interval
 
 ## DEMO
 	一、即時連線確認之必要
