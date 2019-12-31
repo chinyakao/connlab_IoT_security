@@ -46,7 +46,7 @@ setInterval(function () {
 }, 1000);
 
 //count Node
-function CountNode(){
+function Count(){
   var type1 = 0;
   var type2 = 0;
   var type3 = 0;
@@ -59,28 +59,30 @@ function CountNode(){
       else if(ip.ipType == 2) type2++;
       else if(ip.ipType == 3) type3++;
   });
-  // if(edges.length != 0){
-
-  //   edges.forEach(
-  //     function(ip){
-  //       if(ip.conType == 1) pie_out++;
-  //       else if(ip.conType == 2) pie_in++;
-  //       else if(ip.conType == 3) pie_gateway++;
-  //   });
-  //   var pie_data = [pie_out, pie_in, pie_gateway];
-
-  //   console.log(pie_in);
-  //   console.log(pie_gateway);
-  //   addData(myPieChart,pie_data);
-  // }
   
-
   document.getElementById('server_to_ip').innerHTML =type1;
   document.getElementById('ip_to_server').innerHTML =type2;
   document.getElementById('ip_server').innerHTML =type4;
   document.getElementById('ip_to_gateway').innerHTML =type3;
   //console.log(type4.length); 
-  setTimeout('CountNode()',1000);
+  
+  var pie_out = 0;
+  var pie_in = 0;
+  var pie_gateway = 0;
+
+  if(edges.length != 0){
+
+    edges.forEach(
+      function(ip){
+        if(ip.conType == 1) pie_out++;
+        else if(ip.conType == 2) pie_in++;
+        else if(ip.conType == 3) pie_gateway++;
+    });
+
+    myPieChart.data.datasets[0].data = [pie_out, pie_in, pie_gateway];
+    myPieChart.update();
+  }
+  setTimeout('Count()',1000);
 }
 
 // table Node
@@ -220,47 +222,6 @@ network.on("click", function(params) {
     }
   }
 });
-
-// // Set new default font family and font color to mimic Bootstrap's default styling
-// Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-// Chart.defaults.global.defaultFontColor = '#858796';
-// var pie_out = 0;
-// var pie_in = 0;
-// var pie_gateway = 0;
-// // Pie Chart
-// var ctx = document.getElementById("myPieChart");
-// var myPieChart = new Chart(ctx, {
-//   type: 'doughnut',
-//   data: {
-//     labels: ["Out", "In", "Gateway"],
-//     datasets: [{
-//       data: [pie_out, pie_in, pie_gateway],
-//       backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e'],
-//       hoverBackgroundColor: ['#2e59d9', '#17a673', '#d4a52f'],
-//       hoverBorderColor: "rgba(234, 236, 244, 1)",
-//     }],
-//   },
-//   options: {
-//     maintainAspectRatio: false,
-//     tooltips: {
-//       backgroundColor: "rgb(255,255,255)",
-//       bodyFontColor: "#858796",
-//       borderColor: '#dddfeb',
-//       borderWidth: 1,
-//       xPadding: 15,
-//       yPadding: 15,
-//       displayColors: false,
-//       caretPadding: 10,
-//     },
-//     legend: {
-//       display: false
-//     },
-//     cutoutPercentage: 80,
-//   },
-// });
-
-
-
 
 function setServer(ip)
 {

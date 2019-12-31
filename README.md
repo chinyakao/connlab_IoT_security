@@ -4,9 +4,7 @@
 ## Question
 	Unsafe 的定義 目前訂 width >= 1.5 就顯示 Unsafe
 ## Bug
-	危險ip的顯示 更新時的顏色不會換回來
 	新增time line chart
-	新增edge table
 	option 可調整time interval
 
 ## DEMO
@@ -17,12 +15,16 @@
 		[HEAD]
 			有自訂的內網名稱及當下時間
 			四種ip位置連線的個數 1.out藍 2.in綠 3.out+in藍綠 4.gateway黃
-		[左下圖]
+		[左中圖]
 			Network Graph連線圖 
 			四種顏色 傳輸時間越長線越粗
 			若有ip位置短時間內port scanning多次，即顯示紅色警告使用者
-		[右下表]
+		[右中表]
 			點擊ip位址或是連線，顯示資訊
+		[左下pie]
+			各種連線所佔比例
+		[右下表]
+			隨時間收到的package 數	
 		[最下表]
 			將各個ip位址呈列
 	三、實作架構
