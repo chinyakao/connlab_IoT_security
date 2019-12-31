@@ -4,7 +4,7 @@
 ## Question
 	Unsafe 的定義 目前訂 width >= 1.5 就顯示 Unsafe
 ## Bug
-	新增time line chart
+	time line chart 修正成多線
 	option 可調整time interval
 
 ## DEMO

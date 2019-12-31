@@ -45,7 +45,29 @@ setInterval(function () {
   })
 }, 1000);
 
-//count Node
+var timelineData = [0,0,0,0,0,0,0,0,0,0,0,0,];
+
+setInterval(function(){
+  var total = 0;
+  total = nodes.length;
+  timelineData[11] = timelineData[10];
+  timelineData[10] = timelineData[9];
+  timelineData[9] = timelineData[8];
+  timelineData[8] = timelineData[7];
+  timelineData[7] = timelineData[6];
+  timelineData[6] = timelineData[5];
+  timelineData[5] = timelineData[4];
+  timelineData[4] = timelineData[3];
+  timelineData[3] = timelineData[2];
+  timelineData[2] = timelineData[1];
+  timelineData[1] = timelineData[0];
+  timelineData[0] = total;
+
+  myTimelineChart.data.datasets[0].data = timelineData;
+  myTimelineChart.update();
+},5000);
+
+//count Node Edge
 function Count(){
   var type1 = 0;
   var type2 = 0;
@@ -59,6 +81,7 @@ function Count(){
       else if(ip.ipType == 2) type2++;
       else if(ip.ipType == 3) type3++;
   });
+
   
   document.getElementById('server_to_ip').innerHTML =type1;
   document.getElementById('ip_to_server').innerHTML =type2;
@@ -84,6 +107,7 @@ function Count(){
   }
   setTimeout('Count()',1000);
 }
+
 
 // table Node
 function TableNode(){
