@@ -45,25 +45,98 @@ setInterval(function () {
   })
 }, 1000);
 
-var timelineData = [0,0,0,0,0,0,0,0,0,0,0,0,];
+var data = [0,0,0,0,0,0,0,0,0,0,0,0,];
+var data1 = [0,0,0,0,0,0,0,0,0,0,0,0,];
+var data2 = [0,0,0,0,0,0,0,0,0,0,0,0,];
+var data3 = [0,0,0,0,0,0,0,0,0,0,0,0,];
+var data4 = [0,0,0,0,0,0,0,0,0,0,0,0,];
 
 setInterval(function(){
   var total = 0;
   total = nodes.length;
-  timelineData[11] = timelineData[10];
-  timelineData[10] = timelineData[9];
-  timelineData[9] = timelineData[8];
-  timelineData[8] = timelineData[7];
-  timelineData[7] = timelineData[6];
-  timelineData[6] = timelineData[5];
-  timelineData[5] = timelineData[4];
-  timelineData[4] = timelineData[3];
-  timelineData[3] = timelineData[2];
-  timelineData[2] = timelineData[1];
-  timelineData[1] = timelineData[0];
-  timelineData[0] = total;
+  var type1 = 0;
+  var type2 = 0;
+  var type3 = 0;
+  var type4 = 0;
 
-  myTimelineChart.data.datasets[0].data = timelineData;
+  nodes.forEach(
+    function(ip){
+      if(ip.ipType == 4) type4++;
+      else if(ip.ipType == 1) type1++;
+      else if(ip.ipType == 2) type2++;
+      else if(ip.ipType == 3) type3++;
+  });
+
+  data[11] = data[10];
+  data[10] = data[9];
+  data[9] = data[8];
+  data[8] = data[7];
+  data[7] = data[6];
+  data[6] = data[5];
+  data[5] = data[4];
+  data[4] = data[3];
+  data[3] = data[2];
+  data[2] = data[1];
+  data[1] = data[0];
+  data[0] = total;
+
+  data1[11] = data1[10];
+  data1[10] = data1[9];
+  data1[9] = data1[8];
+  data1[8] = data1[7];
+  data1[7] = data1[6];
+  data1[6] = data1[5];
+  data1[5] = data1[4];
+  data1[4] = data1[3];
+  data1[3] = data1[2];
+  data1[2] = data1[1];
+  data1[1] = data1[0];
+  data1[0] = type1;
+
+  data2[11] = data2[10];
+  data2[10] = data2[9];
+  data2[9] = data2[8];
+  data2[8] = data2[7];
+  data2[7] = data2[6];
+  data2[6] = data2[5];
+  data2[5] = data2[4];
+  data2[4] = data2[3];
+  data2[3] = data2[2];
+  data2[2] = data2[1];
+  data2[1] = data2[0];
+  data2[0] = type2;
+
+  data3[11] = data3[10];
+  data3[10] = data3[9];
+  data3[9] = data3[8];
+  data3[8] = data3[7];
+  data3[7] = data3[6];
+  data3[6] = data3[5];
+  data3[5] = data3[4];
+  data3[4] = data3[3];
+  data3[3] = data3[2];
+  data3[2] = data3[1];
+  data3[1] = data3[0];
+  data3[0] = type3;
+
+  data4[11] = data4[10];
+  data4[10] = data4[9];
+  data4[9] = data4[8];
+  data4[8] = data4[7];
+  data4[7] = data4[6];
+  data4[6] = data4[5];
+  data4[5] = data4[4];
+  data4[4] = data4[3];
+  data4[3] = data4[2];
+  data4[2] = data4[1];
+  data4[1] = data4[0];
+  data4[0] = type4;
+  
+  myTimelineChart.data.datasets[0].data = data;
+  myTimelineChart.data.datasets[1].data = data1;
+  myTimelineChart.data.datasets[2].data = data2;
+  myTimelineChart.data.datasets[3].data = data4;
+  myTimelineChart.data.datasets[4].data = data3;
   myTimelineChart.update();
 },5000);
 
@@ -73,7 +146,7 @@ function Count(){
   var type2 = 0;
   var type3 = 0;
   var type4 = 0;
- 
+
   nodes.forEach(
     function(ip){
       if(ip.ipType == 4) type4++;
@@ -82,13 +155,11 @@ function Count(){
       else if(ip.ipType == 3) type3++;
   });
 
-  
   document.getElementById('server_to_ip').innerHTML =type1;
   document.getElementById('ip_to_server').innerHTML =type2;
   document.getElementById('ip_server').innerHTML =type4;
   document.getElementById('ip_to_gateway').innerHTML =type3;
-  //console.log(type4.length); 
-  
+
   var pie_out = 0;
   var pie_in = 0;
   var pie_gateway = 0;

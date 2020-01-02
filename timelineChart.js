@@ -34,18 +34,74 @@ var myTimelineChart = new Chart(ctx, {
   data: {
     labels: ["5 s", "10 s", "15 s", "20 s", "25 s", "30 s", "35 s", "40 s", "45 s", "50 s", "55 s", "60 s"],
     datasets: [{
-      label: "Nodes Num",
+      label: "total",
+      lineTension: 0.3,
+      backgroundColor: "rgba(133, 135, 150, 0.05)",
+      borderColor: "rgba(133, 135, 150, 1)",
+      // pointRadius: 3,
+      pointBackgroundColor: "rgba(133, 135, 150, 1)",
+      pointBorderColor: "rgba(133, 135, 150, 1)",
+      // pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgba(133, 135, 150, 1)",
+      pointHoverBorderColor: "rgba(133, 135, 150, 1)",
+      // pointHitRadius: 10,
+      // pointBorderWidth: 2,
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    },{
+      label: "Ip <- Intranet",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
+      // pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
       pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
+      // pointHoverRadius: 3,
       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
+      // pointHitRadius: 10,
+      // pointBorderWidth: 2,
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    },{
+      label: "Ip -> Intranet",
+      lineTension: 0.3,
+      backgroundColor: "rgb(28,200,138, 0.05)",
+      borderColor: "rgb(28,200,138)",
+      // pointRadius: 3,
+      pointBackgroundColor: "rgb(28,200,138)",
+      pointBorderColor: "rgb(28,200,138)",
+      // pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgb(28,200,138)",
+      pointHoverBorderColor: "rgb(28,200,138)",
+      // pointHitRadius: 10,
+      // pointBorderWidth: 2,
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    },{
+      label: "Ip <=> Intranet",
+      lineTension: 0.3,
+      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      borderColor: "rgb(54,185,204)",
+      // pointRadius: 3,
+      pointBackgroundColor: "rgb(54,185,204)",
+      pointBorderColor: "rgb(54,185,204)",
+      // pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgb(54,185,204)",
+      pointHoverBorderColor: "rgb(54,185,204)",
+      // pointHitRadius: 10,
+      // pointBorderWidth: 2,
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    },{
+      label: "Ip -> Gateway",
+      lineTension: 0.3,
+      backgroundColor: "rgb(246,194,62,0.05)",
+      borderColor: "rgb(246,194,62)",
+      // pointRadius: 3,
+      pointBackgroundColor: "rgb(246,194,62)",
+      pointBorderColor: "rgb(246,194,62)",
+      // pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgb(246,194,62)",
+      pointHoverBorderColor: "rgb(246,194,62)",
+      // pointHitRadius: 10,
+      // pointBorderWidth: 2,
       data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
     }],
   },
@@ -76,10 +132,10 @@ var myTimelineChart = new Chart(ctx, {
         ticks: {
           maxTicksLimit: 5,
           padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return number_format(value);
-          }
+          // // Include a dollar sign in the ticks
+          // callback: function(value, index, values) {
+          //   return number_format(value);
+          // }
         },
         gridLines: {
           color: "rgb(234, 236, 244)",
@@ -91,7 +147,8 @@ var myTimelineChart = new Chart(ctx, {
       }],
     },
     legend: {
-      display: false
+      display: true,
+      position: 'bottom'
     },
     tooltips: {
       backgroundColor: "rgb(255,255,255)",
