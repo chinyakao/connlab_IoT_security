@@ -24,7 +24,7 @@ setInterval(function () {
       // edges.remove(ip.id);
 
     if((now_time-get_time)>30000){
-      console.log(ip.timestamp);
+      // console.log(ip.timestamp);
       var edge_remove_id = ip.id;
       var node_remove_id = edge_remove_id.substring(0, edge_remove_id.length-1);
       var edge_conType = ip.conType;
@@ -125,15 +125,15 @@ function TableNode(){
       lasttime = "--";
     }else if(ip.ipType == 1){
       type= "IP <- Intranet";
-      console.log(ip);
-      console.log(edges.get(name+"1"));
+      // console.log(ip);
+      // console.log(edges.get(name+"1"));
       rate = (edges.get(name+"1").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
     }else if(ip.ipType == 2){
       type= "IP -> Intranet";
-      console.log(ip);
-      console.log(edges.get(name+"2"));
+      // console.log(ip);
+      // console.log(edges.get(name+"2"));
       rate =  (edges.get(name+"2").width).toFixed(2);
       if(rate>=1.5)
         danger ="Unsafe";
@@ -285,7 +285,7 @@ function OldnodeNewedge(src, dest, newType, times){
     nodes.update({id: src, color: "#f6c23e", timestamp: times, ipType: 3});
     edges.remove(src+"5");
     edges.add({id: src+"3", from: src, to: dest, arrows:{to: {enabled: true, type: "triangle"}}, color:"#f6c23e", width: 1, timestamp: times, conType: 3});
-    console.log(obj_msg);
+    // console.log(obj_msg);
   }else if(newType == 5){
     nodes.update({id: src, color: "#e74a3b", timestamp: times, ipType: 5});
     edges.remove(src+"3");
