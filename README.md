@@ -9,8 +9,8 @@
 
 ## DEMO-歷史連線圖
 	一、主要目的	
-		用地圖的形式，確認過去有什麼IP位置來連線到我們的內網設備
-		呈現出各地區ip位置的連線數量、連線方式以及顯示危險性
+		用地圖的形式，確認過去的連線狀況
+		呈現出各地區ip位置的連線數量、連線方式以及顯示特殊事件
 	二、實作架構
 		使用了 d3.js 來建構世界地圖以及經緯度在地圖上的相對座標，
 		只要給定經緯度就可以在網頁上得到相對的位置
@@ -38,21 +38,22 @@
 ## DEMO-即時連線圖
 	一、主要目的
 		確認自身內網的設備和外網其他位置的連線互動
-		呈現各個ip位置的資訊、連線時間、數量、危險性
+		呈現各個ip位置的資訊、連線時間、數量、特殊事件
 		能即時發現有危險性的連線
 	二、實作架構
 		1、主要架構(圖)
 			MQTT、WebSocket
 		2、資料處理(圖)
 			使用欄位oob.in及oob.out分類四種type的連線
-			[ADD]當有new message傳送過來，即更新(新增) ip位址 以及 ip 的更新時間和封包數(連線時間長度)
-			[REMOVE]每40秒檢查一次，ip位址在一分鐘內是否有更新，若超過一分鐘未更新，就刪除ip位址 
-			[COUNT][TABLE]每秒更新一次
+			[ADD]當有package傳送過來，整理後，再更新(新增) ip位址 以及 ip 的更新時間和封包數(連線時間長度)
+			[REMOVE]每秒檢查，ip位址在30秒內是否有更新，若超過30秒未更新，就刪除ip位址 
+			[TIMELINE]每5秒更新一次
+			[COUNT][TABLE][PIE]每秒更新一次
 		3、視覺呈現(圖)
 			BOOSTRAP -> RWD
 			js -> Counting
-			vis.js -> Network Graph、Graph event
-			chart.js -> Table
+			vis.js -> Network Graph、 Graph event
+			chart.js -> Table、 Pie、 Timeline
 	三、使用流程
 			(網頁圖)
 			[HEAD]
@@ -61,7 +62,7 @@
 			[左中圖]
 				Network Graph連線圖 
 				四種顏色 傳輸時間越長線越粗
-				若有ip位置短時間內port scanning多次，即顯示紅色警告使用者
+				若有ip位置短時間內port scanning多次，顯示紅色警告使用者
 			[右中表]
 				點擊ip位址或是連線，顯示資訊
 			[左下pie]
@@ -70,6 +71,8 @@
 				隨時間收到的package 數	
 			[最下表]
 				將各個ip位址呈列
+			[特殊事件]
+				若有ip位置短時間內port scanning多次，會跳網頁通知，並顯示成紅色警告使用者
 	四、遇到的困難
 		1. mqtt連接web的過程是透過webSockets做api連接，
 		從了解mqtt的發布訂閱到接收資料呈現在網頁應用上花了較多的時間
