@@ -34,7 +34,7 @@ var myTimelineChart = new Chart(ctx, {
   data: {
     labels: ["5 s", "10 s", "15 s", "20 s", "25 s", "30 s", "35 s", "40 s", "45 s", "50 s", "55 s", "60 s"],
     datasets: [{
-      label: "total",
+      label: "Total",
       lineTension: 0.3,
       backgroundColor: "rgba(133, 135, 150, 0.05)",
       borderColor: "rgba(133, 135, 150, 1)",

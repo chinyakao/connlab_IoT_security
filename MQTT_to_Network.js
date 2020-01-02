@@ -13,6 +13,7 @@ var data = {
 };
 var options = {};
 var network = new vis.Network(container, data, options);
+var remove_time = 30000;
 
 // remove Nodes
 setInterval(function () {
@@ -23,7 +24,7 @@ setInterval(function () {
     // return((now_time-get_time)>30000);
       // edges.remove(ip.id);
 
-    if((now_time-get_time)>30000){
+    if((now_time-get_time)>remove_time){
       // console.log(ip.timestamp);
       var edge_remove_id = ip.id;
       var node_remove_id = edge_remove_id.substring(0, edge_remove_id.length-1);
